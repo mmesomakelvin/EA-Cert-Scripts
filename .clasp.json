@@ -1,0 +1,16 @@
+{
+  "scriptId": "1Yr8IxNJPFiKBPe-KGw94ulJIl9u0CJQ8tQxPPMVvK02mfRsFv8dlBwd7",
+  "rootDir": "Source_Certificate\\Aug 25 Cert Script",
+  "scriptExtensions": [
+    ".js",
+    ".gs"
+  ],
+  "htmlExtensions": [
+    ".html"
+  ],
+  "jsonExtensions": [
+    ".json"
+  ],
+  "filePushOrder": [],
+  "skipSubdirectories": false
+}
