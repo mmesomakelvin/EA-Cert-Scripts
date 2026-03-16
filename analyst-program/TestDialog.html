@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 16px;
+        color: #202124;
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 18px;
+      }
+
+      p {
+        margin: 0 0 10px;
+        line-height: 1.45;
+      }
+
+      label {
+        display: block;
+        margin: 14px 0 6px;
+        font-weight: 600;
+      }
+
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 12px;
+        border: 1px solid #c7c7c7;
+        border-radius: 6px;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin: 16px 0;
+      }
+
+      button {
+        border: 0;
+        border-radius: 6px;
+        padding: 10px 12px;
+        background: #0b57d0;
+        color: #fff;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      button.secondary {
+        background: #5f6368;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      #status {
+        white-space: pre-wrap;
+        background: #f7f8f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 12px;
+        min-height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Analyst Certificate Test</h2>
+    <p>Use this to copy the first real data row into the <strong>Test</strong> sheet, change <strong>Completion</strong> and <strong>Proficiency</strong> on row 2, then preview or send the result.</p>
+
+    <label for="recipientEmail">Who should receive the test email?</label>
+    <input id="recipientEmail" type="email" placeholder="Enter a test email address" />
+
+    <div class="actions">
+      <button onclick="prepareTestSheet()">Prepare Test Sheet</button>
+      <button class="secondary" onclick="previewTestEmail()">Preview Test Email</button>
+      <button onclick="sendTestEmail()">Send Test Email</button>
+    </div>
+
+    <div id="status">Ready.</div>
+
+    <script>
+      function setBusy(isBusy) {
+        document.querySelectorAll("button").forEach(function(button) {
+          button.disabled = isBusy;
+        });
+      }
+
+      function getRecipientEmail() {
+        return document.getElementById("recipientEmail").value.trim();
+      }
+
+      function setStatus(message) {
+        document.getElementById("status").textContent = message;
+      }
+
+      function handleFailure(error) {
+        setBusy(false);
+        setStatus(error && error.message ? error.message : String(error));
+      }
+
+      function prepareTestSheet() {
+        setBusy(true);
+        setStatus("Preparing Test sheet...");
+        google.script.run
+          .withSuccessHandler(function(result) {
+            setBusy(false);
+            setStatus(result.message);
+          })
+          .withFailureHandler(handleFailure)
+          .prepareTestSheetForDialog();
+      }
+
+      function previewTestEmail() {
+        setBusy(true);
+        setStatus("Building preview...");
+        google.script.run
+          .withSuccessHandler(function(result) {
+            setBusy(false);
+            setStatus(result.message);
+          })
+          .withFailureHandler(handleFailure)
+          .previewTestSheetEmailForDialog(getRecipientEmail());
+      }
+
+      function sendTestEmail() {
+        setBusy(true);
+        setStatus("Sending test email...");
+        google.script.run
+          .withSuccessHandler(function(result) {
+            setBusy(false);
+            setStatus(result.message);
+          })
+          .withFailureHandler(handleFailure)
+          .sendTestSheetEmailForDialog(getRecipientEmail());
+      }
+    </script>
+  </body>
+</html>
